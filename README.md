@@ -145,10 +145,6 @@ O AI4I 2020 é um dataset **altamente desbalanceado** (~3,4% de falhas). Os expe
 | Análise global | ✅ Suportada | ❌ Apenas local |
 | Nativo para árvores | ✅ TreeExplainer | ❌ Agnóstico (mais lento) |
 
-### Por que não usar Acurácia? / Why not use Accuracy?
-
-Um modelo que **nunca prevê falha** atingiria **96,6% de acurácia** no AI4I 2020 — pois 96,6% das amostras são normais. Esse modelo seria completamente inútil em produção mas pareceria excelente pela acurácia. Por isso as métricas utilizadas são PR-AUC, F1-Score e Recall.
-
 ---
 
 ## Instalação / Installation
@@ -288,7 +284,10 @@ Este projeto está licenciado sob a **MIT License** — veja o arquivo [LICENSE]
 ## Autor / Author
 
 Paulo Roberto de Souza Mesquita Junior
+
 paulo.adm@gmail.com
+
+https://www.linkedin.com/in/paulomesquitas/
 
 ---
 
