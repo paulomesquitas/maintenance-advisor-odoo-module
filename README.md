@@ -12,13 +12,17 @@
 
 ---
 
-## Sobre o Projeto
+## Sobre o Projeto / About
 
 O **Maintenance Advisor** é um módulo customizado para o **Odoo 19** que implementa **Manutenção Preditiva** com **Inteligência Artificial Explicável (XAI)** diretamente na interface nativa do sistema ERP.
 
-O módulo analisa continuamente os dados dos sensores de equipamentos industriais e calcula, em tempo real, a **probabilidade de falha** de cada máquina — permitindo intervenções precisas antes que a falha ocorra. Diferente de soluções de "caixa-preta", o sistema utiliza **SHAP (SHapley Additive Explanations)** para explicar **por que** um equipamento foi classificado como crítico, identificando o sensor mais impactante em cada predição.
+O módulo analisa os dados dos sensores de equipamentos industriais e calcula, em tempo real, a **probabilidade de falha** de cada máquina — permitindo intervenções precisas antes que a falha ocorra. Diferente de soluções de "caixa-preta", o sistema utiliza **SHAP (SHapley Additive Explanations)** para explicar **por que** um equipamento foi classificado como crítico, identificando o sensor mais impactante em cada predição.
 
-### Contexto Acadêmico
+[EN] The **Maintenance Advisor** is a customized module for **Odoo 19** that implements **Predictive Maintenance** with **Explainable Artificial Intelligence (XAI)** directly in the native ERP system interface.
+
+The module analyzes data from industrial equipment sensors and calculates, in real time, the **probability of failure** of each machine—allowing for precise interventions before failure occurs. Unlike "black-box" solutions, the system uses **SHAP (SHapley Additive Explanations)** to explain **why** a piece of equipment was classified as critical, identifying the most impactful sensor in each prediction.
+
+### Contexto Acadêmico / Academic Context
 
 Este projeto foi desenvolvido como **Trabalho de Conclusão de Curso (TCC)** com o objetivo de:
 
@@ -29,7 +33,7 @@ Este projeto foi desenvolvido como **Trabalho de Conclusão de Curso (TCC)** com
 
 ---
 
-## Funcionalidades
+## Funcionalidades / Features
 
 ### 🔮 Motor de Predição
 - Modelo **XGBoost** treinado no **AI4I 2020 Predictive Maintenance Dataset** (UCI)
@@ -68,7 +72,7 @@ Este projeto foi desenvolvido como **Trabalho de Conclusão de Curso (TCC)** com
 
 ---
 
-## Arquitetura
+## Arquitetura / Architecture
 
 ```
 maintenance_advisor/
@@ -112,9 +116,9 @@ Telemetria (°C) → Conversão K → _validate_features()
 
 ---
 
-## Embasamento Científico — Comparativo XGBoost vs Random Forest e SHAP vs LIME
+## Embasamento Científico / Scientific Basis — (XGBoost vs Random Forest & SHAP vs LIME)
 
-### Por que XGBoost?
+### Por que XGBoost? / Why XGBoost?
 
 O AI4I 2020 é um dataset **altamente desbalanceado** (~3,4% de falhas). Os experimentos com validação cruzada estratificada 5-fold demonstraram:
 
@@ -131,7 +135,7 @@ O AI4I 2020 é um dataset **altamente desbalanceado** (~3,4% de falhas). Os expe
 
 > O alto Recall do Random Forest indica comportamento "agressivo" (muitos falsos alarmes). Em ambiente industrial, 35% de alarmes falsos geram fadiga operacional.
 
-### Por que SHAP?
+### Por que SHAP? / Why SHAP?
 
 | Critério | SHAP | LIME |
 |---|---|---|
@@ -141,20 +145,20 @@ O AI4I 2020 é um dataset **altamente desbalanceado** (~3,4% de falhas). Os expe
 | Análise global | ✅ Suportada | ❌ Apenas local |
 | Nativo para árvores | ✅ TreeExplainer | ❌ Agnóstico (mais lento) |
 
-### Por que não usar Acurácia?
+### Por que não usar Acurácia? / Why not use Accuracy?
 
 Um modelo que **nunca prevê falha** atingiria **96,6% de acurácia** no AI4I 2020 — pois 96,6% das amostras são normais. Esse modelo seria completamente inútil em produção mas pareceria excelente pela acurácia. Por isso as métricas utilizadas são PR-AUC, F1-Score e Recall.
 
 ---
 
-## Instalação
+## Instalação / Installation
 
-### Pré-requisitos
+### Pré-requisitos / Prerequisites
 
 - Odoo 19.0
 - Python 3.10+
 
-### 1. Dependências Python
+### 1. Dependências Python / Python Dependencies
 
 **Windows:**
 ```cmd
@@ -171,7 +175,7 @@ sudo pip3 install numpy pandas matplotlib scikit-learn xgboost shap joblib --bre
 python3 -c "import numpy, pandas, matplotlib, sklearn, xgboost, shap, joblib; print('OK')"
 ```
 
-### 2. Instalar o Módulo
+### 2. Instalar o Módulo / Installation Module
 
 Copie a pasta `maintenance_advisor` para o diretório de addons do Odoo e execute:
 
@@ -183,7 +187,7 @@ python3 odoo-bin -d seu_banco -i maintenance_advisor --stop-after-init
 D:\Odoo19\python\python.exe D:\Odoo19\server\odoo-bin -d odoo19 -i maintenance_advisor --stop-after-init
 ```
 
-### 3. Ativar o Modelo de IA Real
+### 3. Ativar o Modelo de IA Real / Activate the Real AI Model
 
 Após treinar o modelo (veja seção Dataset e Treinamento), copie os arquivos:
 
@@ -200,7 +204,7 @@ MOCK_MODE = False
 
 ---
 
-## Dataset e Treinamento
+## Dataset e Treinamento / Dataset and Training
 
 ### AI4I 2020 Predictive Maintenance Dataset
 
@@ -209,7 +213,7 @@ MOCK_MODE = False
 - **Falhas:** ~339 (3,39%) — dataset desbalanceado
 - **Features:** Temperatura do Ar [K], Temperatura do Processo [K], Velocidade Rotacional [rpm], Torque [Nm], Desgaste da Ferramenta [min]
 
-### Treinar o Modelo
+### Treinar o Modelo / Train the Model
 
 Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHAP_LIME.ipynb` no Google Colab:
 
@@ -220,7 +224,7 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 
 ---
 
-## Categorias de Equipamentos
+## Categorias de Equipamentos / Equipment Categories
 
 | Categoria | Tipo | Modelo de IA | Status |
 |---|---|---|---|
@@ -232,7 +236,7 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 
 ---
 
-## Valores de Referência dos Sensores
+## Valores de Referência dos Sensores / Reference Values ​​for Sensors
 
 | Sensor | Faixa Normal | Atenção | Crítico |
 |---|---|---|---|
@@ -244,7 +248,7 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias Utilizadas / Used Technologies
 
 | Camada | Tecnologia |
 |---|---|
@@ -260,7 +264,7 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 
 ---
 
-## Estrutura do Repositório
+## Estrutura do Repositório / Repository Structure
 
 ```
 .
@@ -275,13 +279,13 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 
 ---
 
-## Licença
+## Licença / License
 
 Este projeto está licenciado sob a **MIT License** — veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ---
 
-## Autor
+## Autor / Author
 
 Paulo Roberto de Souza Mesquita Junior
 paulo.adm@gmail.com
