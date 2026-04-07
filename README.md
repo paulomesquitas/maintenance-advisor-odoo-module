@@ -12,6 +12,8 @@
 
 ---
 
+<img width="1915" height="1076" alt="Screenshot-Maintenance-Advisor" src="https://github.com/user-attachments/assets/43414789-fcfd-40a1-a8f3-48aafda4b062" />
+
 ## Sobre o Projeto / About
 
 O **Maintenance Advisor** é um módulo customizado para o **Odoo 19** que implementa **Manutenção Preditiva** com **Inteligência Artificial Explicável (XAI)** diretamente na interface nativa do sistema ERP.
