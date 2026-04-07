@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_maintenance_telemetry_user,maintenance.telemetry user,model_maintenance_telemetry,maintenance.group_equipment_manager,1,1,1,0
+access_maintenance_telemetry_admin,maintenance.telemetry admin,model_maintenance_telemetry,base.group_system,1,1,1,1
+access_prediction_wizard_user,maintenance.prediction.result.wizard user,model_maintenance_prediction_result_wizard,base.group_user,1,1,1,1

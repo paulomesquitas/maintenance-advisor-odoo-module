@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_prediction_result_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.prediction.result.wizard.form</field>
+        <field name="model">maintenance.prediction.result.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Resultado da Predição">
+                <sheet>
+                    <!-- Banner colorido conforme resultado -->
+                    <div class="alert alert-danger mb-3"
+                         invisible="notification_type != 'danger'">
+                        <strong><i class="fa fa-exclamation-triangle me-1"/>
+                        ⚠️ RISCO CRÍTICO DETECTADO</strong>
+                        <br/>
+                        Uma Ordem de Manutenção foi criada automaticamente.
+                    </div>
+                    <div class="alert alert-warning mb-3"
+                         invisible="notification_type != 'warning'">
+                        <strong><i class="fa fa-exclamation-circle me-1"/>
+                        ⚠️ Risco Moderado</strong>
+                        <br/>
+                        Monitoramento recomendado.
+                    </div>
+                    <div class="alert alert-success mb-3"
+                         invisible="notification_type != 'success'">
+                        <strong><i class="fa fa-check-circle me-1"/>
+                        ✅ Operação Normal</strong>
+                    </div>
+
+                    <group>
+                        <group string="Resultado">
+                            <field name="equipment_name"/>
+                            <field name="failure_probability"/>
+                            <field name="risk_level"/>
+                            <field name="top_feature"
+                                   invisible="not top_feature"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Fechar" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

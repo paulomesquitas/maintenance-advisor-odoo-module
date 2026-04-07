@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <!-- ================================================================
+         Template do Card Individual de Equipamento
+         ================================================================ -->
+    <t t-name="maintenance_advisor.EquipmentRiskCard">
+        <div class="o_ma_equipment_card" t-att-class="riskClass">
+            <!-- Header do Card -->
+            <div class="o_ma_card_header">
+                <div class="o_ma_card_title_group">
+                    <h5 class="o_ma_card_title" t-esc="props.equipment.name"/>
+                    <span class="o_ma_category_badge"
+                          t-esc="props.equipment.ai_category"/>
+                </div>
+                <span class="o_ma_risk_label" t-esc="riskLabel"/>
+            </div>
+
+            <!-- Barra de Progresso de Risco -->
+            <div class="o_ma_risk_bar_container">
+                <div class="o_ma_risk_bar_label">
+                    <span>Risco de Falha</span>
+                    <strong t-esc="(props.equipment.predictive_risk_pct || 0).toFixed(1) + '%'"/>
+                </div>
+                <div class="o_ma_risk_bar_bg">
+                    <div class="o_ma_risk_bar_fill"
+                         t-att-style="`width: ${riskBarWidth}%; background-color: ${riskBarColor};`"/>
+                </div>
+            </div>
+
+            <!-- Detalhes -->
+            <div class="o_ma_card_details">
+                <div class="o_ma_detail_item" t-if="props.equipment.shap_top_feature">
+                    <span class="o_ma_detail_label">⚠️ Fator Principal</span>
+                    <span class="o_ma_detail_value" t-esc="props.equipment.shap_top_feature"/>
+                </div>
+                <div class="o_ma_detail_item" t-if="props.equipment.last_prediction_date">
+                    <span class="o_ma_detail_label">🕒 Última Análise</span>
+                    <span class="o_ma_detail_value"
+                          t-esc="new Date(props.equipment.last_prediction_date).toLocaleString('pt-BR')"/>
+                </div>
+                <div class="o_ma_detail_item">
+                    <span class="o_ma_detail_label">🤖 Modelo</span>
+                    <span class="o_ma_detail_value"
+                          t-esc="props.equipment.ai_model_version || 'N/A'"/>
+                </div>
+            </div>
+
+            <!-- Ações do Card -->
+            <div class="o_ma_card_actions">
+                <button class="o_ma_btn o_ma_btn_primary"
+                        t-on-click="onRunPrediction">
+                    <i class="fa fa-refresh me-1"/>
+                    Analisar
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <!-- ================================================================
+         Template Principal do Dashboard
+         ================================================================ -->
+    <t t-name="maintenance_advisor.PredictiveDashboard">
+        <div class="o_ma_dashboard">
+
+            <!-- Header do Dashboard -->
+            <div class="o_ma_dashboard_header">
+                <div class="o_ma_header_title">
+                    <h1>
+                        <i class="fa fa-brain me-2"/>
+                        Dashboard Preditivo — Maintenance Advisor
+                    </h1>
+                    <p class="text-muted">
+                        Monitoramento em tempo real com IA Explicável (XAI) • AI4I 2020 Dataset
+                        <span t-if="state.lastRefresh" class="ms-2">
+                            | Atualizado: <strong t-esc="state.lastRefresh"/>
+                        </span>
+                    </p>
+                </div>
+                <button class="o_ma_btn o_ma_btn_outline"
+                        t-on-click="onRefresh"
+                        t-att-disabled="state.isLoading">
+                    <i class="fa fa-sync-alt me-1"
+                       t-att-class="state.isLoading ? 'fa-spin' : ''"/>
+                    Atualizar
+                </button>
+            </div>
+
+            <!-- Cards de Resumo (KPIs) -->
+            <div class="o_ma_kpi_row" t-if="!state.isLoading">
+                <div class="o_ma_kpi_card o_ma_kpi_total">
+                    <div class="o_ma_kpi_value" t-esc="summaryStats.total"/>
+                    <div class="o_ma_kpi_label">Equipamentos Monitorados</div>
+                </div>
+                <div class="o_ma_kpi_card o_ma_kpi_critical">
+                    <div class="o_ma_kpi_value" t-esc="summaryStats.critical"/>
+                    <div class="o_ma_kpi_label">🔴 Risco Crítico</div>
+                </div>
+                <div class="o_ma_kpi_card o_ma_kpi_warning">
+                    <div class="o_ma_kpi_value" t-esc="summaryStats.warning"/>
+                    <div class="o_ma_kpi_label">🟡 Risco Moderado</div>
+                </div>
+                <div class="o_ma_kpi_card o_ma_kpi_safe">
+                    <div class="o_ma_kpi_value" t-esc="summaryStats.safe"/>
+                    <div class="o_ma_kpi_label">🟢 Operação Normal</div>
+                </div>
+                <div class="o_ma_kpi_card o_ma_kpi_avg">
+                    <div class="o_ma_kpi_value" t-esc="summaryStats.avgRisk + '%'"/>
+                    <div class="o_ma_kpi_label">Risco Médio</div>
+                </div>
+            </div>
+
+            <!-- Toolbar de Filtros e Busca -->
+            <div class="o_ma_toolbar">
+                <!-- Busca -->
+                <div class="o_ma_search_box">
+                    <i class="fa fa-search"/>
+                    <input type="text"
+                           placeholder="Buscar equipamento..."
+                           t-att-value="state.searchTerm"
+                           t-on-input="onSearchChange"
+                           class="o_ma_search_input"/>
+                </div>
+
+                <!-- Filtros de Status -->
+                <div class="o_ma_filter_group">
+                    <button t-foreach="[
+                        ['all',      'Todos'],
+                        ['critical', '🔴 Crítico'],
+                        ['warning',  '🟡 Moderado'],
+                        ['safe',     '🟢 Normal']
+                    ]" t-as="filter" t-key="filter[0]"
+                        class="o_ma_filter_btn"
+                        t-att-class="state.filterStatus === filter[0] ? 'o_ma_filter_active' : ''"
+                        t-att-data-filter="filter[0]"
+                        t-on-click="onFilterChange">
+                        <t t-esc="filter[1]"/>
+                    </button>
+                </div>
+
+                <!-- Ordenação -->
+                <select class="o_ma_sort_select"
+                        t-on-change="(ev) => onSortChange(ev.target.value)">
+                    <option value="risk_desc">↓ Maior Risco</option>
+                    <option value="name">A-Z Nome</option>
+                    <option value="last_prediction">Última Predição</option>
+                </select>
+            </div>
+
+            <!-- Estado de Loading -->
+            <div class="o_ma_loading" t-if="state.isLoading">
+                <i class="fa fa-cog fa-spin fa-3x"/>
+                <p>Carregando dados do motor de IA...</p>
+            </div>
+
+            <!-- Estado de Erro -->
+            <div class="alert alert-danger" t-elif="state.errorMessage">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                <t t-esc="state.errorMessage"/>
+            </div>
+
+            <!-- Grid de Cards -->
+            <div class="o_ma_cards_grid" t-elif="filteredEquipments.length">
+                <t t-foreach="filteredEquipments" t-as="equipment" t-key="equipment.id">
+                    <EquipmentRiskCard
+                        equipment="equipment"
+                        onRunPrediction.bind="onRunPrediction"/>
+                </t>
+            </div>
+
+            <!-- Estado Vazio -->
+            <div class="o_ma_empty_state" t-else="">
+                <i class="fa fa-robot fa-4x"/>
+                <h3>Nenhum equipamento encontrado</h3>
+                <p>
+                    <t t-if="state.filterStatus !== 'all' or state.searchTerm">
+                        Tente ajustar os filtros ou a busca.
+                    </t>
+                    <t t-else="">
+                        Configure a "Categoria de IA" nos equipamentos para ativá-los no monitoramento preditivo.
+                    </t>
+                </p>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

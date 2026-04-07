@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         EXTENSÃO DA FICHA DO EQUIPAMENTO
+         Adiciona: banner de alerta crítico, aba "Predictive Insights",
+         botão de predição manual e smart buttons de contadores.
+         ================================================================ -->
+
+    <record id="view_equipment_predictive_form" model="ir.ui.view">
+        <field name="name">maintenance.equipment.predictive.form</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ── Banner de Alerta Crítico (topo do form) ── -->
+            <xpath expr="//sheet" position="before">
+            <div class="alert alert-danger alert-dismissible fade show o_predictive_critical_banner"
+                role="alert"
+                invisible="not is_critical_risk"
+                style="color: #A52A2A;">
+                <strong style="color: #A52A2A;">
+                    <i class="fa fa-exclamation-triangle me-1"/>
+                    RISCO CRÍTICO DE FALHA DETECTADO
+                </strong>
+                <span style="color: #A52A2A;"> — Probabilidade atual: </span>
+                <strong style="color: #A52A2A;">
+                    <field name="predictive_risk_pct" widget="float" class="d-inline" style="color: #A52A2A;"/>%
+                </strong>
+                <span style="color: #A52A2A;">&amp;nbsp;|&amp;nbsp; Principal fator: </span>
+                <strong>
+                    <field name="shap_top_feature" class="d-inline" style="color: #A52A2A;"/>
+                </strong>
+                <span style="color: #A52A2A; font-size:0.85em;">
+                    Última análise: <field name="last_prediction_date" widget="datetime" class="d-inline" style="color: #A52A2A;"/>
+                </span>
+            </div>
+            </xpath>
+
+            <!-- ── Smart Buttons (header) ── -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_telemetry"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-tachometer">
+                    <field name="telemetry_count" widget="statinfo" string="Telemetria"/>
+                </button>
+                <button name="action_view_predictive_requests"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-robot">
+                    <field name="maintenance_request_predictive_count" widget="statinfo" string="OS Preditivas"/>
+                </button>
+            </xpath>
+
+            <!-- ── Aba "Predictive Insights" (após a última aba existente) ── -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Predictive Insights" name="predictive_insights">
+                    <group>
+                        <!-- Configuração do Motor de IA -->
+                        <group string="⚙️ Configuração de IA" col="2">
+                            <field name="ai_category"/>
+                            <field name="ai_model_version"/>
+                            <field name="failure_threshold_override"
+                                   help="0 = usa o limiar global do sistema"/>
+                        </group>
+
+                        <!-- Status da Última Predição -->
+                        <group string="📊 Última Predição" col="2">
+                            <field name="predictive_risk_pct"
+                                   string="Risco de Falha (%)"
+                                   widget="float"/>
+                            <field name="last_prediction_date" widget="datetime"/>
+                            <field name="is_critical_risk" widget="boolean_toggle" readonly="1"/>
+                            <field name="shap_top_feature" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Botão de Predição Manual -->
+                    <div class="text-center my-3">
+                        <button name="action_run_prediction"
+                                type="object"
+                                string="🤖 Executar Predição Agora"
+                                class="btn btn-primary btn-lg"
+                                confirm="Iniciar ciclo completo de predição de IA para este equipamento?"/>
+                    </div>
+
+                    <!-- Gráfico SHAP -->
+                    <group string="🔍 Explicação SHAP (Shapley Additive Explanations)"
+                           invisible="not shap_chart_b64">
+                        <div class="o_field_widget text-center p-3"
+                             style="background:#1A1A2E; border-radius:8px;">
+                            <field name="shap_chart_b64"
+                                   widget="image"
+                                   options="{'size': [900, 400]}"
+                                   style="max-width:100%; border-radius:6px;"/>
+                        </div>
+                    </group>
+
+                    <!-- Texto de Explicação -->
+                    <div invisible="not shap_explanation_text" style="margin-top: 12px;">
+                        <h4 style="font-weight: bold; margin-bottom: 8px;">📝 Análise Textual da Predição</h4>
+                        <field name="shap_explanation_text"
+                            widget="html"
+                            nolabel="1"
+                            style="width: 100%;"/>
+                    </div>
+
+                    <!-- Mensagem quando não há dados -->
+                    <div class="alert alert-info"
+                         invisible="last_prediction_date != False">
+                        <i class="fa fa-info-circle me-2"/>
+                        Nenhuma predição executada ainda. Adicione leituras de telemetria
+                        e clique em <strong>"Executar Predição Agora"</strong>.
+                    </div>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================
+         LIST VIEW PRÓPRIA: Lista preditiva sem herdar view nativa
+         ================================================================ -->
+    <record id="view_equipment_predictive_list_own" model="ir.ui.view">
+        <field name="name">maintenance.equipment.predictive.list</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <list string="Equipamentos Monitorados"
+                  decoration-danger="is_critical_risk == True"
+                  decoration-warning="predictive_risk_pct >= 40 and not is_critical_risk">
+                <field name="name" string="Equipamento"/>
+                <field name="ai_category" string="Categoria IA"/>
+                <field name="predictive_risk_pct" string="Risco (%)"/>
+                <field name="last_prediction_date" string="Última Predição"/>
+                <field name="is_critical_risk" string="Crítico" widget="boolean"/>
+                <field name="shap_top_feature" string="Fator Principal" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action dedicada para a lista preditiva -->
+    <record id="action_equipment_predictive_list" model="ir.actions.act_window">
+        <field name="name">Equipamentos Monitorados</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_equipment_predictive_list_own')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_equipment_predictive_form')})]"/>
+        <field name="domain">[('ai_category', '!=', False)]</field>
+    </record>
+
+</odoo>

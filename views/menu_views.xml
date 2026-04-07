@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         MENU RAIZ PRÓPRIO — independente dos IDs do módulo maintenance
+         Aparece como app separada no menu principal do Odoo.
+         ================================================================ -->
+
+    <!-- Action para o Dashboard OWL -->
+    <record id="action_predictive_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard Preditivo</field>
+        <field name="tag">maintenance_advisor.predictive_dashboard</field>
+    </record>
+
+    <!-- Menu raiz — sem parent = aparece no topo como aplicação própria -->
+    <menuitem id="menu_maintenance_advisor_root"
+              name="Maintenance Advisor"
+              sequence="90"
+              web_icon="maintenance_advisor,static/description/icon.png"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_maintenance_advisor_dashboard"
+              name="Dashboard Preditivo"
+              parent="menu_maintenance_advisor_root"
+              action="action_predictive_dashboard"
+              sequence="5"/>
+
+    <!-- Equipamentos Monitorados -->
+    <menuitem id="menu_maintenance_advisor_equipment"
+              name="Equipamentos Monitorados"
+              parent="menu_maintenance_advisor_root"
+              action="action_equipment_predictive_list"
+              sequence="8"/>
+
+    <!-- Telemetria de Sensores -->
+    <menuitem id="menu_maintenance_advisor_telemetry"
+              name="Telemetria de Sensores"
+              parent="menu_maintenance_advisor_root"
+              action="action_maintenance_telemetry"
+              sequence="10"/>
+
+</odoo>

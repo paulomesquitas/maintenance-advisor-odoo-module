@@ -1,0 +1,343 @@
+/* =============================================================================
+   Maintenance Advisor — Estilos do Dashboard Preditivo OWL
+   ============================================================================= */
+
+/* ── Variáveis de Tema ──────────────────────────────────────────────────────── */
+:root {
+    --ma-critical:    #E74C3C;
+    --ma-warning:     #F39C12;
+    --ma-safe:        #27AE60;
+    --ma-neutral:     #2C3E50;
+    --ma-bg-dark:     #1A1A2E;
+    --ma-bg-card:     #16213E;
+    --ma-text-light:  #ECF0F1;
+    --ma-text-muted:  #95A5A6;
+    --ma-border:      rgba(255, 255, 255, 0.1);
+    --ma-radius:      10px;
+    --ma-transition:  all 0.25s ease;
+}
+
+/* ── Container Principal ────────────────────────────────────────────────────── */
+.o_ma_dashboard {
+    padding: 24px;
+    background: #F0F3F7;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.o_ma_dashboard_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background: var(--ma-bg-dark);
+    border-radius: var(--ma-radius);
+    color: var(--ma-text-light);
+}
+
+.o_ma_header_title h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.o_ma_header_title p {
+    color: var(--ma-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ── KPI Cards ──────────────────────────────────────────────────────────────── */
+.o_ma_kpi_row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.o_ma_kpi_card {
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 20px;
+    border-radius: var(--ma-radius);
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: var(--ma-transition);
+}
+
+.o_ma_kpi_card:hover { transform: translateY(-2px); }
+
+.o_ma_kpi_value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.o_ma_kpi_label {
+    font-size: 0.78rem;
+    margin-top: 6px;
+    opacity: 0.9;
+}
+
+.o_ma_kpi_total    { background: var(--ma-neutral); }
+.o_ma_kpi_critical { background: var(--ma-critical); }
+.o_ma_kpi_warning  { background: var(--ma-warning); }
+.o_ma_kpi_safe     { background: var(--ma-safe); }
+.o_ma_kpi_avg      { background: #8E44AD; }
+
+/* ── Toolbar ────────────────────────────────────────────────────────────────── */
+.o_ma_toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.o_ma_search_box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #DDE;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.o_ma_search_box .fa { color: #95A5A6; }
+
+.o_ma_search_input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 0.9rem;
+    background: transparent;
+}
+
+.o_ma_filter_group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.o_ma_filter_btn {
+    padding: 7px 14px;
+    border: 1px solid #DDE;
+    border-radius: 20px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: var(--ma-transition);
+    color: var(--ma-neutral);
+}
+
+.o_ma_filter_btn:hover       { background: #EEF; }
+.o_ma_filter_active           {
+    background: var(--ma-neutral) !important;
+    color: #fff !important;
+    border-color: var(--ma-neutral) !important;
+}
+
+.o_ma_sort_select {
+    padding: 7px 12px;
+    border: 1px solid #DDE;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+}
+
+/* ── Cards Grid ─────────────────────────────────────────────────────────────── */
+.o_ma_cards_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ── Card Individual ────────────────────────────────────────────────────────── */
+.o_ma_equipment_card {
+    background: #fff;
+    border-radius: var(--ma-radius);
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: var(--ma-transition);
+    border-left: 5px solid #DDD;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.o_ma_equipment_card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-critical { border-left-color: var(--ma-critical); background: #FFF9F9; }
+.card-warning  { border-left-color: var(--ma-warning);  background: #FFFCF5; }
+.card-safe     { border-left-color: var(--ma-safe);     background: #F9FFF9; }
+
+/* Header do Card */
+.o_ma_card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.o_ma_card_title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ma-neutral);
+    margin: 0;
+    word-break: break-word;
+}
+
+.o_ma_category_badge {
+    font-size: 0.7rem;
+    color: var(--ma-text-muted);
+    background: #EEF2F7;
+    padding: 2px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.o_ma_risk_label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Barra de Progresso */
+.o_ma_risk_bar_container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.o_ma_risk_bar_label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--ma-text-muted);
+}
+
+.o_ma_risk_bar_label strong { color: var(--ma-neutral); }
+
+.o_ma_risk_bar_bg {
+    height: 8px;
+    background: #EEF2F7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.o_ma_risk_bar_fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Detalhes do Card */
+.o_ma_card_details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.o_ma_detail_item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    gap: 8px;
+}
+
+.o_ma_detail_label { color: var(--ma-text-muted); }
+.o_ma_detail_value { color: var(--ma-neutral); font-weight: 600; text-align: right; }
+
+/* Ações */
+.o_ma_card_actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* ── Botões ─────────────────────────────────────────────────────────────────── */
+.o_ma_btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--ma-transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.o_ma_btn_primary {
+    background: var(--ma-neutral);
+    color: #fff;
+    flex: 1;
+    justify-content: center;
+}
+
+.o_ma_btn_primary:hover { background: #1A252F; }
+
+.o_ma_btn_outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 8px 18px;
+}
+
+.o_ma_btn_outline:hover { background: rgba(255,255,255,0.1); }
+
+.o_ma_btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Loading ────────────────────────────────────────────────────────────────── */
+.o_ma_loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ma-text-muted);
+}
+
+.o_ma_loading p { margin-top: 16px; font-size: 1rem; }
+
+/* ── Estado Vazio ───────────────────────────────────────────────────────────── */
+.o_ma_empty_state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ma-text-muted);
+}
+
+.o_ma_empty_state .fa { margin-bottom: 16px; opacity: 0.3; color: var(--ma-neutral); }
+.o_ma_empty_state h3  { color: var(--ma-neutral); margin-bottom: 10px; }
+
+/* ── Banner Crítico na Ficha do Equipamento ─────────────────────────────────── */
+.o_predictive_critical_banner {
+    animation: ma-pulse 2s infinite;
+    font-size: 0.95rem;
+}
+
+@keyframes ma-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+    70%  { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+/* ── Responsividade ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .o_ma_dashboard        { padding: 12px; }
+    .o_ma_kpi_card         { min-width: 100px; }
+    .o_ma_kpi_value        { font-size: 1.6rem; }
+    .o_ma_dashboard_header { flex-direction: column; gap: 12px; }
+    .o_ma_toolbar          { flex-direction: column; align-items: stretch; }
+    .o_ma_filter_group     { justify-content: flex-start; }
+}

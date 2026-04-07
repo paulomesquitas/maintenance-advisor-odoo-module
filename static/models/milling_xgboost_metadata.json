@@ -1,0 +1,27 @@
+{
+  "model_version": "xgboost-ai4i-v1.1",
+  "dataset": "AI4I 2020 Predictive Maintenance (UCI ID=601)",
+  "feature_names": [
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]"
+  ],
+  "feature_count": 5,
+  "note": "Type_enc removido — compativel com modulo Odoo",
+  "n_estimators": 300,
+  "max_depth": 6,
+  "learning_rate": 0.05,
+  "scale_pos_weight": 28.49852507374631,
+  "trained_on_n_samples": 10000,
+  "positive_class_count": 339,
+  "positive_class_ratio": 0.0339,
+  "roc_auc_cv": 0.9760074058037791,
+  "pr_auc_cv": 0.7659016326416147,
+  "f1_cv": 0.6927796048033688,
+  "recall_cv": 0.7465320456540826,
+  "trained_at": "2026-03-30 02:56:47",
+  "odoo_module": "maintenance_advisor",
+  "ai_category": "milling"
+}

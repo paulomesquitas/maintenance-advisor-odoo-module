@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         VIEWS DO MODELO maintenance.telemetry
+         ================================================================ -->
+
+    <!-- Form View -->
+    <record id="view_maintenance_telemetry_form" model="ir.ui.view">
+        <field name="name">maintenance.telemetry.form</field>
+        <field name="model">maintenance.telemetry</field>
+        <field name="arch" type="xml">
+            <form string="Leitura de Telemetria">
+                <sheet>
+                    <widget name="web_ribbon" title="Anomalia"
+                            bg_color="bg-danger"
+                            invisible="not anomaly_flag"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="equipment_id" options="{'no_create': True}"/>
+                        </h1>
+                        <h4 class="text-muted">
+                            <field name="reading_datetime" widget="datetime"/>
+                            &amp;nbsp;|&amp;nbsp;
+                            <field name="source" widget="badge"/>
+                        </h4>
+                    </div>
+
+                    <group>
+                        <!-- Features AI4I 2020 -->
+                        <group string="🌡️ Variáveis de Temperatura">
+                            <field name="air_temperature_k" string="Temperatura do Ar [°C]"/>
+                            <field name="process_temperature_k" string="Temperatura do Processo [°C]"/>
+                            <field name="temp_delta_k" string="ΔT Processo-Ar [K]" readonly="1"/>
+                        </group>
+                        <group string="⚙️ Variáveis Mecânicas">
+                            <field name="rotational_speed_rpm" string="Velocidade Rotacional [rpm]"/>
+                            <field name="torque_nm" string="Torque [Nm]"/>
+                            <field name="tool_wear_min" string="Desgaste da Ferramenta [min]"/>
+                            <field name="power_proxy_w" string="Potência Estimada [W]" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="📋 Metadados">
+                            <field name="source"/>
+                            <field name="anomaly_flag" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group string="Observações">
+                        <field name="notes" nolabel="1" placeholder="Anotações do operador ou sistema..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_maintenance_telemetry_list" model="ir.ui.view">
+        <field name="name">maintenance.telemetry.list</field>
+        <field name="model">maintenance.telemetry</field>
+        <field name="arch" type="xml">
+            <list string="Leituras de Telemetria"
+                  decoration-danger="anomaly_flag == True"
+                  default_order="reading_datetime desc">
+                <field name="reading_datetime"/>
+                <field name="equipment_id"/>
+                <field name="air_temperature_k"   string="T.Ar [K]"      optional="show"/>
+                <field name="process_temperature_k" string="T.Proc [K]"  optional="show"/>
+                <field name="temp_delta_k"          string="ΔT [K]"      optional="hide"/>
+                <field name="rotational_speed_rpm"  string="RPM"         optional="show"/>
+                <field name="torque_nm"             string="Torque [Nm]" optional="show"/>
+                <field name="tool_wear_min"         string="Desgaste [min]" optional="show"/>
+                <field name="source"                widget="badge"        optional="show"/>
+                <field name="anomaly_flag"          widget="boolean"      optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_maintenance_telemetry_search" model="ir.ui.view">
+        <field name="name">maintenance.telemetry.search</field>
+        <field name="model">maintenance.telemetry</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Telemetria">
+                <field name="equipment_id"/>
+                <field name="reading_datetime"/>
+                <filter string="Anomalias" name="anomalies" domain="[('anomaly_flag', '=', True)]"/>
+                <filter string="Hoje" name="today"
+                        domain="[('reading_datetime', '>=', (context_today()).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Fonte: CRON" name="src_cron" domain="[('source', '=', 'cron')]"/>
+                <filter string="Fonte: Manual" name="src_manual" domain="[('source', '=', 'manual')]"/>
+                <separator/>
+                <filter string="Agrupar por Equipamento" name="group_equipment"
+                        context="{'group_by': 'equipment_id'}"/>
+                <filter string="Agrupar por Fonte" name="group_source"
+                        context="{'group_by': 'source'}"/>
+                <filter string="Agrupar por Data" name="group_date"
+                        context="{'group_by': 'reading_datetime:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_maintenance_telemetry" model="ir.actions.act_window">
+        <field name="name">Telemetria de Sensores</field>
+        <field name="res_model">maintenance.telemetry</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_maintenance_telemetry_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nenhuma leitura de telemetria registrada.
+            </p>
+            <p>
+                Clique em "Novo" para adicionar uma leitura manual, ou ative o
+                CRON de simulação para injetar dados do AI4I 2020 automaticamente.
+            </p>
+        </field>
+    </record>
+
+</odoo>

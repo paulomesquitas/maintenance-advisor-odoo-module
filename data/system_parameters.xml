@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Limiar global de risco crítico (%) para geração de Ordem de Manutenção + SHAP -->
+    <record id="param_failure_threshold" model="ir.config_parameter">
+        <field name="key">maintenance_advisor.failure_threshold</field>
+        <field name="value">70.0</field>
+    </record>
+
+    <!-- Versão do módulo para rastreabilidade dos modelos -->
+    <record id="param_module_version" model="ir.config_parameter">
+        <field name="key">maintenance_advisor.module_version</field>
+        <field name="value">1.0.0-poc</field>
+    </record>
+</odoo>
