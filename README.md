@@ -269,7 +269,7 @@ Use o notebook Jupyter disponível em `/notebooks/TCC_Comparativo_XGBoost_RF_SHA
 ├── maintenance_advisor/          # Módulo Odoo
 │   └── ...
 ├── notebooks/
-│   └── TCC_Comparativo_XGBoost_RF_SHAP_LIME.ipynb  # Notebook de análise
+│   └── Comparativo_XGBoost_RF_SHAP_LIME.ipynb  # Notebook de análise
 ├── docs/
 │   └── Manual_Maintenance_Advisor.docx              # Manual do operador
 └── README.md
